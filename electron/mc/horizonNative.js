@@ -27,7 +27,7 @@ const validTag = (t) => typeof t === 'string' && /^native-[A-Za-z0-9._-]{1,100}$
 
 // Horizon Launcher's executable: from its uninstall entry, else the usual place.
 function launcherExe() {
-  if (process.platform !== 'win32') return null;
+  if (process.platform !== 'win32') return require('child_process').spawnSync('which', ['horizon-launcher'], { encoding: 'utf8' }).stdout?.trim() || null;
   const roots = [
     'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall',
     'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall',
@@ -54,7 +54,7 @@ function launcherExe() {
 function buildOf(tag) {
   if (!validTag(tag)) return null;
   const dir = path.join(versionsDir(), tag);
-  if (!fs.existsSync(path.join(dir, 'horizon-client.exe'))) return null;
+  if (!fs.existsSync(path.join(dir, (process.platform === "win32" ? "horizon-client.exe" : "horizon-client")))) return null;
   let v;
   try { v = JSON.parse(fs.readFileSync(path.join(dir, 'native-mods.json'), 'utf8')); } catch { return null; }
   const take = (k) => (Array.isArray(v[k]) ? v[k] : []).filter((m) => m && typeof m.id === 'string').map((m) => ({ id: m.id, version: String(m.version ?? '') }));

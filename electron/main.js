@@ -2,6 +2,10 @@
 // and then even a small read waits. Must be set before the first use of the pool.
 if (!process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
 const { app, BrowserWindow, ipcMain, nativeImage } = require('electron');
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('use-gl', 'angle');
+app.commandLine.appendSwitch('use-angle', 'swiftshader');
+app.commandLine.appendSwitch('enable-unsafe-swiftshader');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');

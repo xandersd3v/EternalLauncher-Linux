@@ -28,9 +28,10 @@ const RELEASE_KEYS = ['MU4oiIQcCxkZvbwSjjXs7SySCuM6ywRQ3nGaJYZG0gw='];
 const SPKI_ED25519_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
 const MANIFEST_URL = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json';
 const RESOURCES_URL = 'https://resources.download.minecraft.net';
-const ASSET = process.arch === 'arm64' ? 'horizon-windows-arm64.zip' : 'horizon-windows-x64.zip';
-const CLIENT_EXE = 'horizon-client.exe';
-const PREPARE_EXE = 'horizon-prepare.exe';
+const isWin = process.platform === 'win32';
+const ASSET = isWin ? (process.arch === 'arm64' ? 'horizon-windows-arm64.zip' : 'horizon-windows-x64.zip') : (process.arch === 'arm64' ? 'horizon-linux-arm64.zip' : 'horizon-linux-x64.zip');
+const CLIENT_EXE = isWin ? 'horizon-client.exe' : 'horizon-client';
+const PREPARE_EXE = isWin ? 'horizon-prepare.exe' : 'horizon-prepare';
 const MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024;
 const OCTET = 'application/octet-stream';
 // What Horizon implements (shown until the first launch tells the exact version).
@@ -44,7 +45,7 @@ const minecraftDir = () => paths.ensureDir(path.join(root(), 'minecraft'));
 const serverJarPath = (mc) => path.join(root(), 'servers', mc, 'server.jar');
 
 function assertSupported() {
-  if (process.platform !== 'win32') throw new Error('Horizon пока работает только на Windows');
+  if (!isWin) { try { fs.chmodSync(path.join(versionsDir(), 'local', CLIENT_EXE), 0o755); fs.chmodSync(path.join(versionsDir(), 'local', PREPARE_EXE), 0o755); } catch {} }
 }
 
 // ---------- small helpers ----------
@@ -286,7 +287,7 @@ async function installBuild(info, report) {
 // ---------- Java ----------
 
 function findJavaHome(rootDir) {
-  const bin = findDirWith(rootDir, path.join('bin', 'java.exe'), 4);
+  const bin = findDirWith(rootDir, path.join('bin', isWin ? 'java.exe' : 'java'), 4);
   return bin;
 }
 
@@ -325,7 +326,7 @@ async function ensureJava(major, mojangComponent, report) {
   const arch = process.arch === 'arm64' ? 'aarch64' : 'x64';
   let adoptium;
   try {
-    const list = await httpJson(`https://api.adoptium.net/v3/assets/latest/${major}/hotspot?architecture=${arch}&image_type=jdk&os=windows&vendor=eclipse`);
+    const list = await httpJson(`https://api.adoptium.net/v3/assets/latest/${major}/hotspot?architecture=${arch}&image_type=jdk&os=${isWin ? 'windows' : 'linux'}&vendor=eclipse`);
     const pkg = list?.[0]?.binary?.package;
     if (!pkg?.link || !pkg?.checksum) throw new Error(`Adoptium не нашёл Java ${major}`);
     githubOnly(pkg.link, ['github.com', 'api.adoptium.net', 'objects.githubusercontent.com']);

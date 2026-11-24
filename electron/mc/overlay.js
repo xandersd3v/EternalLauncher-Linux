@@ -123,6 +123,7 @@ function prepare(instanceId, keyLabel = 'F9') {
 
 // Before Horizon starts: the file in which the game writes where its control socket is (--control-socket). null = the overlay is not available.
 function prepareHorizon(instanceId, keyLabel = 'F9', vk = 0) {
+  if (process.platform !== 'win32') return null;
   try {
     release(instanceId);
     const dir = path.join(app.getPath('userData'), 'run');
