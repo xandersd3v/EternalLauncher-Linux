@@ -5,7 +5,7 @@
 <h1 align="center">Eternal Launcher</h1>
 
 <p align="center">
-  Лаунчер Minecraft для Windows: Vanilla, Fabric, Forge, NeoForge, Quilt,<br>
+  Лаунчер Minecraft для Windows, Linux: Vanilla, Fabric, Forge, NeoForge, Quilt,<br>
   моды и сборки с Modrinth и CurseForge, Horizon (Minecraft на Rust).
 </p>
 
@@ -20,24 +20,20 @@
 </p>
 
 <p align="center">
+  <b>Скачать установщик для Linux: <a href="https://github.com/xandersd3v/EternalLauncher-Linux/releases">github.com/xandersd3v/EternalLauncher-Linux/releases</a></b>
+</p>
+
+<p align="center">
   <img src="docs/screenshot.png" alt="Главный экран Eternal Launcher" width="900">
 </p>
 
-*Eternal Launcher is a Windows launcher for Minecraft (Electron + React): vanilla, Fabric, Forge, NeoForge, Quilt, Modrinth and CurseForge catalogs, Horizon (Rust) builds. Download: [eternal-launcher.com/launcher](https://eternal-launcher.com/launcher).*
+*Eternal Launcher is a Windows, Linux launcher for Minecraft (Electron + React): vanilla, Fabric, Forge, NeoForge, Quilt, Modrinth and CurseForge catalogs, Horizon (Rust) builds. Download: [eternal-launcher.com/launcher](https://eternal-launcher.com/launcher).*
 
 > Это неофициальный продукт, он не связан с Mojang Studios и Microsoft. Minecraft является товарным знаком Mojang Studios.
 
 ## Установка
-1. Скачайте установщик на странице [eternal-launcher.com/launcher](https://eternal-launcher.com/launcher).
-2. Запустите файл `Eternal-Launcher-Setup-<версия>.exe` и следуйте подсказкам установщика.
-3. Windows может показать предупреждение «Windows защитила ваш компьютер»: установщик пока не подписан платным сертификатом Windows. Нажмите **Подробнее** → **Выполнить в любом случае**.
-4. Дальше лаунчер обновляется сам: новую версию он скачивает и проверяет по цифровой подписи.
-
-### Антивирусы и ложные срабатывания
-Сторонние антивирусы (например, Kaspersky) иногда считают лаунчер подозрительным и блокируют установщик или запуск. Это **ложные срабатывания**: так бывает с молодыми программами без платной цифровой подписи Windows, которые скачивают файлы из интернета, запускают Java и меняют файлы игры (то же делают любые лаунчеры Minecraft). Что можно сделать:
-- добавить папку лаунчера и установщик в исключения антивируса;
-- проверить файл на [VirusTotal](https://www.virustotal.com) и при желании отправить его своему антивирусу как ложное срабатывание;
-- если не доверяете готовому установщику, соберите лаунчер сами из исходников (раздел «Сборка из исходников» ниже): весь код открыт.
+1. Скачайте установщик на странице https://github.com/xandersd3v/EternalLauncher-Linux/releases.
+2. Запустите файл `Eternal-Launcher-Setup-<версия>.appImage` через chmod +x `Eternal-Launcher-Setup-<версия>.appImage` в директории скачивания.
 
 ## Содержание
 - [Установка](#установка)
@@ -59,7 +55,7 @@
 - Часть косметики (плащи, сердечки, цвет ника) доступна по подписке на сайте Eternal; скины Eternal работают только на основном оффлайн-аккаунте.
 
 ## Сборка из исходников
-Нужны Windows и Node.js (проверено на версии 24). Лаунчер рассчитан на Windows; Linux и macOS пока не поддерживаются.
+Нужны Linux и npm (проверено на версии 24). Лаунчер рассчитан на Linux, Windows; macOS пока не поддерживаются.
 
 ```powershell
 npm ci
@@ -88,8 +84,6 @@ npm run dist             # собрать установщик в папку rel
 - **идентификатор устройства:** при проверке лицензии на сайт отправляется хэш (SHA-256, первые 32 символа) от идентификатора установки Windows (`MachineGuid`) с добавлением соли `eternal-launcher-device`. Это нужно, чтобы привязывать лицензию к устройству. Сам `MachineGuid`, имя компьютера и список программ не отправляются;
 - скины, плащи и сердечки основного оффлайн-аккаунта (публикация на сервере скинов);
 - проверка обновлений лаунчера (файл `latest.json` с подписью).
-
-**Хранение данных.** Токены входа Microsoft шифруются средствами Windows (DPAPI) и привязаны к вашей учётной записи Windows. Настройки лежат в `%APPDATA%\EternalLauncher`.
 
 ## Готовые файлы в репозитории
 Обычно собранные файлы в репозиторий не кладут. Здесь три исключения, и вот почему:
